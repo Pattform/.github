@@ -22,7 +22,8 @@ jobs:
 | Event | Runs |
 | --- | --- |
 | Pull request | `pattform validate`, then `pattform preview` |
-| Push to main, manual run | `pattform validate`, then `pattform up` (Client specs first) |
+| Push to main, manual run on main | `pattform validate`, then `pattform up` (Client specs first) |
+| Manual run on any other branch | `pattform validate`, then `pattform preview` (the portal's dry runs, on `portal/dry-run/*`) |
 | Schedule | `pattform validate`, then `pattform drift` (fails on any drift) |
 
 AWS and GCP access is keyless through GitHub OIDC (`pattform-github-deploy` role, `github-actions` workload identity pool). Callers pin the workflow by ref; switch `@main` to a release tag once one exists.

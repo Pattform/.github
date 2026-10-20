@@ -7,6 +7,8 @@ name: Pattform deploy
 #
 #   pull_request  validate, then preview every spec
 #   push to main  validate, then up every spec (Client specs first)
+#   manual run    on main: up. On any other branch (the portal's
+#                 portal/dry-run/* previews): preview, never up
 #   schedule      drift check; fails the run if anything drifted
 #
 # Credentials are keyless: GitHub's OIDC token assumes pattform-github-deploy
@@ -43,9 +45,12 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    # One run at a time per repo; never cancel an in-flight `up`.
+    # One run at a time per repo and ref; never cancel an in-flight `up`.
+    # Previews (PRs, portal dry runs) get their own group: GitHub keeps only
+    # one pending run per group, so sharing main's would let a preview evict
+    # a queued deploy.
     concurrency:
-      group: pattform-deploy-${{ github.repository }}
+      group: pattform-deploy-${{ github.repository }}-${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && 'main' || github.ref }}
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
@@ -75,6 +80,10 @@ jobs:
             schedule)     command=drift ;;
             *)            command=up ;;
           esac
+          # Only main ever deploys.
+          if [ "$command" = up ] && [ "$GITHUB_REF" != refs/heads/main ]; then
+            command=preview
+          fi
           npx --yes "@pattform/engine@${{ inputs.engine-version }}" "$command"
       - name: Upload status
         if: always()
