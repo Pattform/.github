@@ -17,7 +17,7 @@ on:
       engine-version:
         description: "@pattform/engine version to run"
         type: string
-        default: "0.1.1"
+        default: "0.2.0"
 
 env:
   AWS_REGION: ap-southeast-2
