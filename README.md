@@ -30,7 +30,7 @@ AWS and GCP access is keyless through GitHub OIDC (`pattform-github-deploy` role
 
 ## Renovate preset
 
-`default.json` is the shared Renovate config for every Pattform and PartPlanner repo (the Mend Renovate GitHub App runs it). Each repo carries only:
+`default.json` is the shared Renovate config for every Pattform and PartPlanner repo (run by our self-hosted Renovate: a Cloud Run Job in `pattform-infrastructure/renovate-job.ts`, as the "Pattform Renovate" GitHub App). Each repo carries only:
 
 ```json
 { "extends": ["github>Pattform/.github"] }
