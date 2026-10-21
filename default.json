@@ -1,0 +1,79 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Pattform's shared Renovate preset. Repos extend it with { \"extends\": [\"github>Pattform/.github\"] }. Non-major updates automerge once the PR's checks (the deploy preview, tests) pass; majors open a PR that waits to be merged from the portal.",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommitsDisabled"
+  ],
+  "timezone": "Pacific/Auckland",
+  "labels": [
+    "renovate"
+  ],
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 20,
+  "minimumReleaseAge": "3 days",
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": false,
+  "rebaseWhen": "behind-base-branch",
+  "customManagers": [
+    {
+      "description": "Capability versions pinned in deploy/ specs: kind LandingSite + annotation \"1.0.0\" is @pattform/capability-landing-site@1.0.0 on npm",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)deploy/[^/]+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "kind:\\s*(?<kind>[A-Za-z]+)\\s[\\s\\S]*?platform\\.pattform\\.io/capability-version:\\s*[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
+      ],
+      "depNameTemplate": "@pattform/capability-{{{lowercase (replace '([a-z0-9])([A-Z])' '$1-$2' kind)}}}",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "The engine version the reusable deploy workflow runs (engine-version input default)",
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)\\.github/workflows/pattform-deploy\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "@pattform/engine version to run\"\\s+type: string\\s+default: \"(?<currentValue>[^\"]+)\""
+      ],
+      "depNameTemplate": "@pattform/engine",
+      "datasourceTemplate": "npm",
+      "versioningTemplate": "semver"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Majors never automerge: their PRs wait for a merge from the portal",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
+    },
+    {
+      "description": "Our own packages ship straight away (no release-age wait)",
+      "matchPackageNames": [
+        "@pattform/**"
+      ],
+      "minimumReleaseAge": null
+    },
+    {
+      "description": "Capability bumps change live infrastructure: one PR per repo (one preview, one deploy, Client first), labelled so the portal can tell them apart",
+      "groupName": "Pattform capabilities",
+      "groupSlug": "pattform-capabilities",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchPackageNames": [
+        "@pattform/capability-*"
+      ],
+      "addLabels": [
+        "capability"
+      ]
+    }
+  ]
+}
