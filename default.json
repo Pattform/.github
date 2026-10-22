@@ -74,6 +74,18 @@
       "addLabels": [
         "capability"
       ]
+    },
+    {
+      "description": "Look up Docker official images (debian, node, eclipse-temurin...) on AWS's public mirror of them: Docker Hub rate-limits anonymous lookups per IP, and Cloud Run's shared IPs hit that limit, which aborts the whole repo. Only the lookup moves; Dockerfiles keep their image names.",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "/^[a-z0-9]+(?:[._-][a-z0-9]+)*$/"
+      ],
+      "registryUrls": [
+        "https://public.ecr.aws/docker/library"
+      ]
     }
   ]
 }
