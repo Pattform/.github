@@ -69,7 +69,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::605134451374:role/pattform-github-deploy
           aws-region: ap-southeast-2
-      - uses: google-github-actions/auth@v2
+      - uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: projects/408361654923/locations/global/workloadIdentityPools/github-actions/providers/github
           service_account: pattform-infra@pattform-management.iam.gserviceaccount.com
