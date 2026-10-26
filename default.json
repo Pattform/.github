@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Pattform's shared Renovate preset. Repos extend it with { \"extends\": [\"github>Pattform/.github\"] }. Non-major updates automerge once the PR's checks (the deploy preview, tests) pass; majors open a PR that waits to be merged from the portal.",
+  "description": "Pattform's shared Renovate preset. Repos extend it with { \"extends\": [\"github>Pattform/.github\"] }. Minor and patch updates are grouped into one PR per repo (saving CI minutes) and automerge once the PR's checks (the deploy preview, tests) pass; majors open a PR that waits to be merged from the portal.",
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
@@ -85,6 +85,28 @@
       ],
       "registryUrls": [
         "https://public.ecr.aws/docker/library"
+      ]
+    },
+    {
+      "description": "npm follows Node: repos pin engines.npm to the npm bundled with their .nvmrc Node (lockfiles must match what CI and Amplify run), so it moves with the Node.js update, not on its own",
+      "matchDepTypes": [
+        "engines"
+      ],
+      "matchPackageNames": [
+        "npm"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "One PR per repo for every minor and patch update: each PR runs the repo's CI, so grouping saves Actions minutes. Last on purpose, so it overrides the built-in monorepo groups for non-majors (majors keep them: parts of a monorepo must move together). Capabilities keep their own group, and majors stay one PR each.",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
+      "matchPackageNames": [
+        "!@pattform/capability-*"
       ]
     }
   ]
