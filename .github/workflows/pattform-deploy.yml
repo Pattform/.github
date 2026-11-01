@@ -64,7 +64,7 @@ jobs:
           echo "${SOPS_SHA256}  /usr/local/bin/sops" | sha256sum -c -
           chmod +x /usr/local/bin/sops
       - name: Install Pulumi
-        uses: pulumi/actions@v6
+        uses: pulumi/actions@v7
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::605134451374:role/pattform-github-deploy
