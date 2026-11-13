@@ -1,12 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Pattform's shared Renovate preset. Repos extend it with { \"extends\": [\"github>Pattform/.github\"] }. Minor and patch updates are grouped into one PR per repo (saving CI minutes) and automerge once the PR's checks (the deploy preview, tests) pass; majors open a PR that waits to be merged from the portal.",
+  "description": "Pattform's shared Renovate preset. Repos extend it with { \"extends\": [\"github>Pattform/.github\"] }. Branches are created and updated only on Monday mornings (NZ), and merging happens on any run, so the Thursday run merges what Monday's checks passed. Minor and patch updates are grouped into one PR per repo (saving CI minutes) and automerge once the PR's checks (the deploy preview, tests) pass; majors open a PR that waits to be merged from the portal.",
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
     ":semanticCommitsDisabled"
   ],
   "timezone": "Pacific/Auckland",
+  "schedule": [
+    "* 0-5 * * 1"
+  ],
+  "automergeSchedule": [
+    "at any time"
+  ],
   "labels": [
     "renovate"
   ],
